@@ -8,6 +8,8 @@ const github = require('./lib/github.js');
 const inquirer = require('./lib/inquirer.js');
 const repo = require('./lib/repo.js');
 
+const { red, yellow, green } = chalk;
+
 const getGithubToken = async () => {
   let token = github.getStoreGithubToken();
   if (token) {
@@ -17,7 +19,7 @@ const getGithubToken = async () => {
 
   const accessToken = await github.hasAccessToken();
   if (accessToken) {
-    console.log(chalk.yellow('An existing access token has been found!'));
+    console.log(yellow('An existing access token has been found!'));
 
     // ask user to regenerate a new token
     token = await github.regenerateNewToken(accessToken.id);
@@ -36,15 +38,18 @@ const run = async () => {
     await repo.createGitignore();
     const done = await repo.setupRepo(url);
     if (done) {
-      console.log(chalk.green('All done!'));
+      console.log(green('✔ All done!'));
     }
   } catch (err) {
-    if (err) {
-      console.log(chalk.red(err));
-    }
+    const name = JSON.parse(err).message;
+    const reason = JSON.parse(err).errors[0].message;
+    console.log(red('✘ ERROR:'), yellow(name));
+    console.log(red('✘ REASON:'), yellow(reason));
+    // console.log(err);
   }
 };
 
 figlet.showBanner();
 figlet.isGit();
+
 run();
