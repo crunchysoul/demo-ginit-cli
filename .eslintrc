@@ -1,0 +1,9 @@
+{
+    "extends": "airbnb-base",
+		"plugins": [
+			"sort-requires"
+		],
+		"rules": {
+			"sort-requires/sort-requires": 2
+		}
+}
